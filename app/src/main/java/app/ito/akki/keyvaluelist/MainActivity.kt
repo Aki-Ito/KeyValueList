@@ -1,6 +1,7 @@
 package app.ito.akki.keyvaluelist
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,33 +9,35 @@ import app.ito.akki.keyvaluelist.databinding.ActivityMainBinding
 import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
-    val sharedPref = getSharedPreferences("savedList", Context.MODE_PRIVATE)
-    var savedMutableList = mutableListOf<Any>()
+    private lateinit var sharedPref: SharedPreferences
+    private var savedMutableList = mutableListOf<Any>()
     private lateinit var binding: ActivityMainBinding
+    //キー
+    private val key: String = "key"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        createDummyData()
-        loadData()
+        sharedPref = getSharedPreferences("savedList", Context.MODE_PRIVATE)
+        createDummyData(key = key)
+        loadData(key = key)
     }
 
-    fun createDummyData(){
+    private fun createDummyData(key: String){
         for (i in 0..10) {
             savedMutableList.add(i)
             val jsonArray = JSONArray(savedMutableList)
-            sharedPref.edit().putString("savedList", jsonArray.toString())
-            sharedPref.edit().apply()
+            sharedPref.edit().putString(key, jsonArray.toString()).apply()
         }
     }
 
-    fun loadData(){
-       val contents = sharedPref.getString("savedList","[]")
-       val list = mutableListOf<String>()
+    private fun loadData(key: String){
+        val contents = JSONArray(sharedPref.getString(key,"[]"))
+        val list = mutableListOf<String>()
         if (contents != null) {
-            for (content in 0 until contents.length){
+            for (content in 0 until contents.length()){
                 list.add(contents[content].toString())
             }
         }
