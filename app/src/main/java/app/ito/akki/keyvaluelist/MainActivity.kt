@@ -9,10 +9,11 @@ import app.ito.akki.keyvaluelist.databinding.ActivityMainBinding
 import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
+    //Activityを開くときにNUllエラーが発生するため、今回はlateinitで宣言している。
     private lateinit var sharedPref: SharedPreferences
     private var savedMutableList = mutableListOf<Any>()
     private lateinit var binding: ActivityMainBinding
-    //キー
+    //キー：sharedPreferencesで保存する際に必要となる。
     private val key: String = "key"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         loadData(key = key)
     }
 
+    //ダミーデータを生成して保存している。
     private fun createDummyData(key: String){
         for (i in 0..10) {
             savedMutableList.add(i)
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //保存したデータを読み出すようにしている。
     private fun loadData(key: String){
         val contents = JSONArray(sharedPref.getString(key,"[]"))
         val list = mutableListOf<String>()
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         setUpRecyclerView(list)
     }
 
+    //リサイクラービューのセットアップ
     fun setUpRecyclerView(list: MutableList<String>){
         val recyclerView = binding.recyclerView
         recyclerView.setHasFixedSize(true)
